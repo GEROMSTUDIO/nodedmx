@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider Vertical</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.84);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            overflow: hidden;
+            gap: 40px;
+        }
+
+        .sliders-container {
+            user-select: none;
+            display: flex;
+            gap: 24px;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: center;    
+            height: 100vh;  
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 20px; 
+        }
+
+        .sliders-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .slider-value {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-container {
+            position: relative;
+            width: 54px;
+            height: 420px;
+            background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 14px;
+            box-shadow:
+                inset 0 2px 8px rgba(0, 0, 0, 0.5),
+                inset 0 -2px 8px rgba(255, 255, 255, 0.1),
+                0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333333af;
+        }
+
+        .slider-track {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: calc(100% - 30px);
+            background: linear-gradient(to bottom, #444 0%, #222 100%);
+            border-radius: 2px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        .slider-handle {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 60px;
+            background: linear-gradient(to bottom, #e8e8e8 0%, #c0c0c0 50%, #a8a8a8 100%);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            border: 1px solid #999;
+            box-shadow:
+                0 2px 6px rgba(0, 0, 0, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.6),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+            top: 170px;
+            /* Position initiale au centre */
+        }
+
+        .slider-handle:hover {
+            background: linear-gradient(to bottom, #f0f0f0 0%, #c8c8c8 50%, #b0b0b0 100%);
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.7),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-handle:active {
+            background: linear-gradient(to bottom, #d8d8d8 0%, #b0b0b0 50%, #989898 100%);
+            box-shadow:
+                0 1px 4px rgba(0, 0, 0, 0.6),
+                inset 0 1px 3px rgba(0, 0, 0, 0.3),
+                inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Lignes de détail sur le handle */
+        .slider-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            right: 4px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #888, transparent);
+            transform: translateY(-50%);
+        }
+
+        .slider-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            right: 4px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #fff, transparent);
+            transform: translateY(-48%);
+        }
+    </style>
+</head>
+
+<body>
+    <div style="position: fixed; top: 10px; left: 10px; background: white; padding: 10px; border: 1px solid #ccc;">
+        <span>État de connexion : </span>
+        <span id="status" style="font-weight: bold; color: red;">Non connecté</span>
+    </div>
+
+    <div class="sliders-container">
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue1">50</div>
+            <div class="slider-container" id="sliderContainer1">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle1"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue2">50</div>
+            <div class="slider-container" id="sliderContainer2">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle2"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue3">50</div>
+            <div class="slider-container" id="sliderContainer3">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle3"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue4">50</div>
+            <div class="slider-container" id="sliderContainer4">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle4"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue5">50</div>
+            <div class="slider-container" id="sliderContainer5">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle5"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue6">50</div>
+            <div class="slider-container" id="sliderContainer6">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle6"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue7">50</div>
+            <div class="slider-container" id="sliderContainer7">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle7"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue8">50</div>
+            <div class="slider-container" id="sliderContainer8">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle8"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue9">50</div>
+            <div class="slider-container" id="sliderContainer9">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle9"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue10">50</div>
+            <div class="slider-container" id="sliderContainer10">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle10"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue11">50</div>
+            <div class="slider-container" id="sliderContainer11">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle11"></div>
+            </div>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-value" id="sliderValue12">50</div>
+            <div class="slider-container" id="sliderContainer12">
+                <div class="slider-track"></div>
+                <div class="slider-handle" id="sliderHandle12"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+let socket = null;
+const WS_ADDRESS = "ws://192.168.1.49:8080"; 
+let sliders = []; // Tableau global des sliders
+
+function connectWebSocket() {
+    socket = new WebSocket(WS_ADDRESS);
+
+    socket.onopen = () => {
+        document.getElementById("status").textContent = "Connecté";
+        document.getElementById("status").style.color = "green";
+        console.log("WebSocket connecté à", WS_ADDRESS);
+
+        // Demande des valeurs initiales
+        socket.send(JSON.stringify({ type: "load" }));
+    };
+
+    socket.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+
+            // Gestion du load
+            if (data.type === "load" && Array.isArray(data.sliders)) {
+                data.sliders.forEach(s => {
+                    const index = s.slider - 1;
+                    if (sliders[index]) {
+                        sliders[index].setValue(s.value, true); // fromRemote = true
+                    }
+                });
+            }
+
+            // Mise à jour d'un slider si message reçu d'un autre utilisateur
+            if (typeof data.slider === "number" && typeof data.value === "number") {
+                const index = data.slider - 1;
+                if (sliders[index] && !sliders[index].isLocalChange) {
+                    sliders[index].setValue(data.value, true); // fromRemote = true
+                }
+            }
+        } catch (err) {
+            console.error("Erreur parsing JSON:", err);
+        }
+    };
+
+    socket.onclose = () => {
+        document.getElementById("status").textContent = "Déconnecté";
+        document.getElementById("status").style.color = "red";
+        setTimeout(connectWebSocket, 2000);
+    };
+
+    socket.onerror = (err) => console.error("Erreur WebSocket:", err);
+}
+
+connectWebSocket();
+
+class VerticalSlider {
+    constructor(containerId, handleId, valueId) {
+        this.container = document.getElementById(containerId);
+        this.handle = document.getElementById(handleId);
+        this.valueDisplay = document.getElementById(valueId);
+
+        this.isDragging = false;
+        this.min = 0;
+        this.max = 100;
+        this.value = 50;
+        this.isLocalChange = false; // pour savoir si c'est nous qui avons changé le slider
+
+        this.containerRect = this.container.getBoundingClientRect();
+        this.handleHeight = this.handle.offsetHeight;
+        this.trackHeight = this.container.offsetHeight - this.handleHeight;
+
+        this.init();
+    }
+
+    init() {
+        // Mouse events
+        this.handle.addEventListener('mousedown', this.startDrag.bind(this));
+        document.addEventListener('mousemove', this.drag.bind(this));
+        document.addEventListener('mouseup', this.endDrag.bind(this));
+
+        // Touch events (multi-touch)
+        this.handle.addEventListener('touchstart', this.startDrag.bind(this), { passive: false });
+        document.addEventListener('touchmove', this.drag.bind(this), { passive: false });
+        document.addEventListener('touchend', this.endDrag.bind(this));
+
+        // Click on track
+        this.container.addEventListener('click', this.clickToMove.bind(this));
+
+        this.updatePosition();
+    }
+
+    startDrag(e) {
+        e.preventDefault();
+        this.isDragging = true;
+        this.handle.style.transition = 'none';
+        this.containerRect = this.container.getBoundingClientRect();
+
+        if (e.type.startsWith("touch")) {
+            this.touchId = e.changedTouches[0].identifier;
+        }
+    }
+
+    drag(e) {
+        if (!this.isDragging) return;
+        e.preventDefault();
+
+        let clientY;
+        if (e.type.includes('touch')) {
+            const touch = Array.from(e.changedTouches).find(t => t.identifier === this.touchId);
+            if (!touch) return;
+            clientY = touch.clientY;
+        } else {
+            clientY = e.clientY;
+        }
+
+        const relativeY = clientY - this.containerRect.top;
+        const clampedY = Math.max(0, Math.min(this.trackHeight, relativeY - this.handleHeight / 2));
+
+        this.value = this.max - Math.round((clampedY / this.trackHeight) * (this.max - this.min));
+        this.updatePosition();
+
+        // Envoi en temps réel à chaque mouvement
+        this.sendValue();
+    }
+
+    endDrag(e) {
+        if (this.isDragging) {
+            this.isDragging = false;
+            this.handle.style.transition = 'all 0.1s ease';
+            // plus besoin de sendValue ici
+        }
+    }
+
+    clickToMove(e) {
+        if (this.isDragging || e.target === this.handle) return;
+
+        const rect = this.container.getBoundingClientRect();
+        const relativeY = e.clientY - rect.top;
+        const clampedY = Math.max(0, Math.min(this.trackHeight, relativeY - this.handleHeight / 2));
+
+        this.value = this.max - Math.round((clampedY / this.trackHeight) * (this.max - this.min));
+        this.updatePosition();
+        this.sendValue();
+    }
+
+    updatePosition() {
+        const position = this.trackHeight - ((this.value - this.min) / (this.max - this.min)) * this.trackHeight;
+        this.handle.style.top = position + 'px';
+        this.valueDisplay.textContent = this.value;
+    }
+
+    setValue(newValue, fromRemote = false) {
+        this.value = Math.max(this.min, Math.min(this.max, newValue));
+        this.updatePosition();
+
+        if (!fromRemote) {
+            this.isLocalChange = true;  // signaler changement local
+            this.sendValue();
+            this.isLocalChange = false; // reset après envoi
+        }
+    }
+
+    getValue() {
+        return this.value;
+    }
+
+    sendValue() {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ slider: sliders.indexOf(this) + 1, value: this.value }));
+        }
+    }
+}
+
+// Création des sliders
+sliders = [];
+for (let i = 1; i <= 12; i++) {
+    const slider = new VerticalSlider(`sliderContainer${i}`, `sliderHandle${i}`, `sliderValue${i}`);
+    sliders.push(slider);
+}
+
+// Redimensionnement fenêtre
+window.addEventListener('resize', () => {
+    sliders.forEach(slider => {
+        slider.containerRect = slider.container.getBoundingClientRect();
+        slider.trackHeight = slider.container.offsetHeight - slider.handle.offsetHeight;
+    });
+});
+
+// Scroll horizontal avec clic-glisser sauf sur les sliders
+const sliderContainer = document.querySelector('.sliders-container');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+sliderContainer.addEventListener('mousedown', (e) => {
+    // Ignorer si le clic est sur un slider ou son handle
+    if (e.target.closest('.slider-handle') || e.target.closest('.slider-container')) {
+        return;
+    }
+    isDown = true;
+    sliderContainer.classList.add('active');
+    startX = e.pageX - sliderContainer.offsetLeft;
+    scrollLeft = sliderContainer.scrollLeft;
+    e.preventDefault();
+});
+
+sliderContainer.addEventListener('mouseleave', () => {
+    isDown = false;
+    sliderContainer.classList.remove('active');
+});
+
+sliderContainer.addEventListener('mouseup', () => {
+    isDown = false;
+    sliderContainer.classList.remove('active');
+});
+
+sliderContainer.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - sliderContainer.offsetLeft;
+    const walk = (startX - x);
+    sliderContainer.scrollLeft = scrollLeft + walk;
+});
+
+</script>
+
+
+
+</body>
+
+</html>
