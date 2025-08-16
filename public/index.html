@@ -246,7 +246,7 @@
 
 <script>
 let socket = null;
-const WS_ADDRESS = "ws://192.168.1.49:8080"; 
+const WS_ADDRESS = `ws://${window.location.hostname}:8080`;
 let sliders = []; // Tableau global des sliders
 
 function connectWebSocket() {
