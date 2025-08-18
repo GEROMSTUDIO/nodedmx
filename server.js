@@ -38,7 +38,7 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
         let msg = message.toString();
-        console.log('Message reçu brut :', msg);
+        console.log(msg);
 
         try {
             // Essayer de parser en JSON
