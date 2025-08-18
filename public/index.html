@@ -323,6 +323,9 @@ class VerticalSlider {
         document.addEventListener('mousemove', this.drag.bind(this));
         document.addEventListener('mouseup', this.endDrag.bind(this));
 
+        // Scroll avec molette
+        this.container.addEventListener('wheel', this.onWheel.bind(this));
+
         // Touch events (multi-touch)
         this.handle.addEventListener('touchstart', this.startDrag.bind(this), { passive: false });
         document.addEventListener('touchmove', this.drag.bind(this), { passive: false });
@@ -414,6 +417,19 @@ class VerticalSlider {
             socket.send(JSON.stringify({ slider: sliders.indexOf(this) + 1, value: this.value }));
         }
     }
+
+    onWheel(e) {
+        e.preventDefault();
+        const step = 20; // pas de 20
+        if (e.deltaY < 0) {
+            // Molette vers le haut
+            this.setValue(this.value + step);
+        } else {
+            // Molette vers le bas
+            this.setValue(this.value - step);
+        }
+    }
+
 }
 
 // Création des sliders
